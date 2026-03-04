@@ -17,6 +17,7 @@ interface PanZoomState {
   handleTouchMove: (e: React.TouchEvent) => void;
   handleTouchEnd: (e: React.TouchEvent) => void;
   resetView: () => void;
+  fitToContainer: (imageWidth: number, imageHeight: number) => void;
   setZoom: (zoom: number) => void;
   transformStyle: React.CSSProperties;
 }
@@ -56,6 +57,19 @@ export function usePanZoom(initialZoom = VIEWER_DEFAULTS.INITIAL_ZOOM): PanZoomS
     setPanX(0);
     setPanY(0);
   }, [initialZoom]);
+
+  const fitToContainer = useCallback(
+    (imageWidth: number, imageHeight: number) => {
+      const el = containerRef.current;
+      if (!el || imageWidth === 0 || imageHeight === 0) return;
+      const { clientWidth, clientHeight } = el;
+      const fit = Math.min(clientWidth / imageWidth, clientHeight / imageHeight, 1);
+      setZoomRaw(clampZoom(fit * 0.95));
+      setPanX(0);
+      setPanY(0);
+    },
+    [clampZoom],
+  );
 
   // ─── Mouse handlers ───
 
@@ -184,6 +198,7 @@ export function usePanZoom(initialZoom = VIEWER_DEFAULTS.INITIAL_ZOOM): PanZoomS
     handleTouchMove,
     handleTouchEnd,
     resetView,
+    fitToContainer,
     setZoom,
     transformStyle,
   };

@@ -40,6 +40,7 @@ export default function DrawingViewer() {
 
 function SingleViewer() {
   const { image: currentImage, label: imageLabel } = useCurrentImage();
+  const { selectedBuildingId } = useDrawingStore();
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
   const {
@@ -53,10 +54,11 @@ function SingleViewer() {
     handleTouchMove,
     handleTouchEnd,
     resetView,
+    fitToContainer,
     transformStyle,
   } = usePanZoom();
 
-  // Reset view and image loaded state when image changes
+  // Reset loading state when image changes
   const prevImageRef = useRef(currentImage);
   if (prevImageRef.current !== currentImage) {
     prevImageRef.current = currentImage;
@@ -64,9 +66,10 @@ function SingleViewer() {
     setImageSize({ width: 0, height: 0 });
   }
 
+  // Only reset view when building changes (not on discipline/revision change)
   useEffect(() => {
     resetView();
-  }, [currentImage, resetView]);
+  }, [selectedBuildingId, resetView]);
 
   if (!currentImage) {
     return (
@@ -107,6 +110,7 @@ function SingleViewer() {
               const img = e.currentTarget;
               setImageLoaded(true);
               setImageSize({ width: img.naturalWidth, height: img.naturalHeight });
+              fitToContainer(img.naturalWidth, img.naturalHeight);
             }}
           />
           {imageLoaded && imageSize.width > 0 && (
