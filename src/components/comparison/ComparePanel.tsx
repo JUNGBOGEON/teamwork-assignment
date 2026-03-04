@@ -1,17 +1,32 @@
 'use client';
 
+import { useRef } from 'react';
 import { getDrawingUrl } from '@/lib/constants';
 import { usePanZoom } from '@/hooks/usePanZoom';
 import type { RevisionView } from '@/types';
 
+export interface PanZoomHandlers {
+  handleWheel: (e: React.WheelEvent) => void;
+  handleMouseDown: (e: React.MouseEvent) => void;
+  handleMouseMove: (e: React.MouseEvent) => void;
+  handleMouseUp: () => void;
+  handleTouchStart: (e: React.TouchEvent) => void;
+  handleTouchMove: (e: React.TouchEvent) => void;
+  handleTouchEnd: (e: React.TouchEvent) => void;
+  transformStyle: React.CSSProperties;
+}
+
 interface ComparePanelProps {
   rev: RevisionView;
   label: string;
+  sharedPanZoom?: PanZoomHandlers;
 }
 
-export default function ComparePanel({ rev, label }: ComparePanelProps) {
+export default function ComparePanel({ rev, label, sharedPanZoom }: ComparePanelProps) {
+  const localRef = useRef<HTMLDivElement>(null);
+  const localPanZoom = usePanZoom();
+
   const {
-    containerRef,
     handleWheel,
     handleMouseDown,
     handleMouseMove,
@@ -20,7 +35,7 @@ export default function ComparePanel({ rev, label }: ComparePanelProps) {
     handleTouchMove,
     handleTouchEnd,
     transformStyle,
-  } = usePanZoom();
+  } = sharedPanZoom ?? localPanZoom;
 
   return (
     <div className="flex-1 flex flex-col min-h-0">
@@ -31,7 +46,7 @@ export default function ComparePanel({ rev, label }: ComparePanelProps) {
         </span>
       </div>
       <div
-        ref={containerRef}
+        ref={localRef}
         className="flex-1 relative overflow-hidden bg-gray-100 cursor-grab active:cursor-grabbing"
         style={{ touchAction: 'none' }}
         onWheel={handleWheel}

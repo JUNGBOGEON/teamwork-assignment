@@ -21,6 +21,9 @@ interface ViewerState {
   compareRightVersion: string | null;
   compareStyle: CompareStyle;
 
+  // Compare sync
+  syncPanZoom: boolean;
+
   // Polygon display
   showPolygons: boolean;
 
@@ -38,6 +41,7 @@ interface ViewerState {
 
   setCompareVersions: (left: string, right: string) => void;
   setCompareStyle: (style: CompareStyle) => void;
+  toggleSyncPanZoom: () => void;
 
   togglePolygons: () => void;
 }
@@ -51,6 +55,7 @@ export const useViewerStore = create<ViewerState>((set, get) => ({
   compareLeftVersion: null,
   compareRightVersion: null,
   compareStyle: 'side-by-side',
+  syncPanZoom: true,
   showPolygons: false,
 
   setMode: (mode) => set({ mode }),
@@ -118,6 +123,8 @@ export const useViewerStore = create<ViewerState>((set, get) => ({
     set({ compareLeftVersion: left, compareRightVersion: right }),
 
   setCompareStyle: (style) => set({ compareStyle: style }),
+
+  toggleSyncPanZoom: () => set((s) => ({ syncPanZoom: !s.syncPanZoom })),
 
   togglePolygons: () => set((s) => ({ showPolygons: !s.showPolygons })),
 }));
