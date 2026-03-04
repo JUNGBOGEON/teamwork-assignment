@@ -50,14 +50,43 @@ export default function SliderCompare({
     setIsDragging(false);
   }, []);
 
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent) => {
+      e.preventDefault();
+      if (e.touches.length === 1) {
+        setIsDragging(true);
+        updateSlider(e.touches[0].clientX);
+      }
+    },
+    [updateSlider],
+  );
+
+  const handleTouchMove = useCallback(
+    (e: React.TouchEvent) => {
+      e.preventDefault();
+      if (!isDragging || e.touches.length !== 1) return;
+      updateSlider(e.touches[0].clientX);
+    },
+    [isDragging, updateSlider],
+  );
+
+  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  }, []);
+
   return (
     <div
       ref={containerRef}
       className="flex-1 relative overflow-hidden bg-gray-100 cursor-col-resize select-none"
+      style={{ touchAction: 'none' }}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
       {/* Right image (full) */}
       <div className="absolute inset-0 flex items-center justify-center">

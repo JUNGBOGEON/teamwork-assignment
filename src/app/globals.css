@@ -37,6 +37,11 @@ body {
   height: 100vh;
 }
 
+/* Prevent iOS long-press context menu on viewer containers */
+.cursor-grab {
+  -webkit-touch-callout: none;
+}
+
 /* Scrollbar styling */
 ::-webkit-scrollbar {
   width: 6px;
