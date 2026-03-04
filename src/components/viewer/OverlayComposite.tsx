@@ -19,6 +19,9 @@ export default function OverlayComposite() {
     handleMouseDown,
     handleMouseMove,
     handleMouseUp,
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd,
     transformStyle: panZoomStyle,
   } = usePanZoom();
 
@@ -38,11 +41,15 @@ export default function OverlayComposite() {
         <div
           ref={containerRef}
           className="flex-1 relative overflow-hidden bg-gray-100 cursor-grab active:cursor-grabbing"
+          style={{ touchAction: 'none' }}
           onWheel={handleWheel}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
         >
           <div
             className="absolute inset-0 flex items-center justify-center"
