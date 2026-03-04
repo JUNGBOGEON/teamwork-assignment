@@ -34,6 +34,9 @@ export function usePanZoom(initialZoom = VIEWER_DEFAULTS.INITIAL_ZOOM): PanZoomS
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
+  // Skip CSS transition for programmatic changes (fitToContainer, resetView)
+  const skipTransitionRef = useRef(false);
+
   // Touch state refs (avoid re-renders on rapid 60Hz+ touch events)
   const touchStartRef = useRef({ x: 0, y: 0 });
   const panStartRef = useRef({ x: 0, y: 0 });
@@ -53,6 +56,7 @@ export function usePanZoom(initialZoom = VIEWER_DEFAULTS.INITIAL_ZOOM): PanZoomS
   );
 
   const resetView = useCallback(() => {
+    skipTransitionRef.current = true;
     setZoomRaw(initialZoom);
     setPanX(0);
     setPanY(0);
@@ -64,6 +68,7 @@ export function usePanZoom(initialZoom = VIEWER_DEFAULTS.INITIAL_ZOOM): PanZoomS
       if (!el || imageWidth === 0 || imageHeight === 0) return;
       const { clientWidth, clientHeight } = el;
       const fit = Math.min(clientWidth / imageWidth, clientHeight / imageHeight, 1);
+      skipTransitionRef.current = true;
       setZoomRaw(clampZoom(fit * 0.95));
       setPanX(0);
       setPanY(0);
@@ -178,10 +183,13 @@ export function usePanZoom(initialZoom = VIEWER_DEFAULTS.INITIAL_ZOOM): PanZoomS
     [panX, panY],
   );
 
+  const useTransition = !isDragging && !skipTransitionRef.current;
+  if (skipTransitionRef.current) skipTransitionRef.current = false;
+
   const transformStyle: React.CSSProperties = {
     transform: `translate(${panX}px, ${panY}px) scale(${zoom})`,
     transformOrigin: 'center center',
-    transition: isDragging ? 'none' : 'transform 0.1s ease-out',
+    transition: useTransition ? 'transform 0.1s ease-out' : 'none',
   };
 
   return {
