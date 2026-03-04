@@ -39,3 +39,25 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Assignment confidential data (외부 공유 금지)
+src/data/metadata.json
+DESIGN.md
+
+# Claude Code / AI assistant
+.claude/
+.claude*
+CLAUDE.md
+
+# Serena
+.serena/
+
+# Playwright MCP
+.playwright-mcp/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~

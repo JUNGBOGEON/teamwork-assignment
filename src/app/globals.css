@@ -2,25 +2,55 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #000000;
+  --sidebar-bg: #fdfdfd;
+  --border: #000000;
+  --accent: #000000;
+  --accent-light: #e5e5e5;
+
+  /* Discipline colors - kept somewhat distinct but muted/darker for premium feel */
+  --disc-architecture: #1f2937;
+  --disc-structure: #7f1d1d;
+  --disc-hvac: #064e3b;
+  --disc-plumbing: #78350f;
+  --disc-mechanical: #4c1d95;
+  --disc-fire: #831843;
+  --disc-landscape: #14532d;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-sidebar: var(--sidebar-bg);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-light: var(--accent-light);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  overflow: hidden;
+  height: 100vh;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #000000;
+  border-radius: 0px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
 }
