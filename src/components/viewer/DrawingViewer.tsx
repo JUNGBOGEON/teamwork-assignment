@@ -7,6 +7,7 @@ import { getDrawingUrl } from '@/lib/constants';
 import { usePanZoom } from '@/hooks/usePanZoom';
 import { useCurrentImage } from '@/hooks/useCurrentImage';
 import ViewerControls from './ViewerControls';
+import PolygonOverlay from './PolygonOverlay';
 import ComparisonView from '@/components/comparison/ComparisonView';
 import OverlayComposite from './OverlayComposite';
 import { MapPin } from 'lucide-react';
@@ -40,6 +41,7 @@ export default function DrawingViewer() {
 function SingleViewer() {
   const { image: currentImage, label: imageLabel } = useCurrentImage();
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
   const {
     containerRef,
     isDragging,
@@ -56,6 +58,7 @@ function SingleViewer() {
   if (prevImageRef.current !== currentImage) {
     prevImageRef.current = currentImage;
     setImageLoaded(false);
+    setImageSize({ width: 0, height: 0 });
   }
 
   useEffect(() => {
@@ -93,8 +96,18 @@ function SingleViewer() {
               imageLoaded ? 'opacity-100' : 'opacity-0'
             }`}
             draggable={false}
-            onLoad={() => setImageLoaded(true)}
+            onLoad={(e) => {
+              const img = e.currentTarget;
+              setImageLoaded(true);
+              setImageSize({ width: img.naturalWidth, height: img.naturalHeight });
+            }}
           />
+          {imageLoaded && imageSize.width > 0 && (
+            <PolygonOverlay
+              imageWidth={imageSize.width}
+              imageHeight={imageSize.height}
+            />
+          )}
         </div>
 
         {!imageLoaded && (
